@@ -6,12 +6,26 @@ defmodule Tymeslot.Emails.Shared.Urls do
   alias Tymeslot.Utils.UrlBuilder
   alias TymeslotWeb.Endpoint
 
+  # Armstrong deployment patch (armstrong-1): brand links in outgoing email
+  # (logo header, footer wordmark) must take clients to the business site,
+  # never to this scheduler's root, which serves the staff login. Functional
+  # links (reschedule, cancel, calendar) keep using get_app_url()/1 below.
+  @business_site_url "https://armstrongtaxconsulting.com"
+
   @doc """
   Gets the application URL from configuration.
   """
   @spec get_app_url() :: String.t()
   def get_app_url do
     Endpoint.url()
+  end
+
+  @doc """
+  The public business website — the target for brand links in email.
+  """
+  @spec get_site_url() :: String.t()
+  def get_site_url do
+    @business_site_url
   end
 
   @doc """
