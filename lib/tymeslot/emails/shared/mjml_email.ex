@@ -137,7 +137,7 @@ defmodule Tymeslot.Emails.Shared.MjmlEmail do
   # Mailgun drops `cid:` entirely and keys inline images by filename.
   # Postmark and AhaSend echo the `cid:` we set. Matching filename and cid
   # is the only value that renders correctly across all four.
-  @logo_cid "tymeslot-logo.png"
+  @logo_cid "logo.png"
 
   @doc "The Content-ID used for the inline logo attachment."
   @spec logo_cid() :: String.t()
@@ -319,9 +319,8 @@ defmodule Tymeslot.Emails.Shared.MjmlEmail do
           letter-spacing="0.02em"
           css-class="email-ink-muted"
         >
-          #{dgettext("emails", "Sent with care by")}
-          <a href="#{Urls.get_site_url()}" class="wordmark email-ink-link" style="color: #{Styles.ink()}; text-decoration: none; font-weight: 800;">Tymeslot</a>
-          · #{dgettext("emails", "scheduling that respects your time")}
+          © #{Date.utc_today().year}
+          <a href="#{Urls.get_site_url()}" class="wordmark email-ink-link" style="color: #{Styles.ink()}; text-decoration: none; font-weight: 800;">#{Branding.brand_name()}</a>
         </mj-text>
       </mj-column>
     </mj-section>
