@@ -144,6 +144,8 @@ defmodule Tymeslot.Application do
         [
           Tymeslot.Infrastructure.DashboardCache,
           Tymeslot.Infrastructure.AvailabilityCache,
+          # Blog/article list pulled from the business site (llms.txt)
+          Tymeslot.Infrastructure.SiteContentCache,
           # Webhook idempotency cache
           Tymeslot.Payments.Webhooks.IdempotencyCache,
           # Booking-analytics dashboard cache

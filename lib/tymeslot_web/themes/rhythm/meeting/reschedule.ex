@@ -11,6 +11,7 @@ defmodule TymeslotWeb.Themes.Rhythm.Meeting.Reschedule do
 
   alias Phoenix.LiveView.JS
   alias TymeslotWeb.Themes.Rhythm.Scheduling.Wrapper
+  alias TymeslotWeb.Themes.Shared.Components.SiteEngagement
   alias TymeslotWeb.Themes.Shared.PathHandlers
 
   attr :theme_tokens, :any, required: true
@@ -33,6 +34,7 @@ defmodule TymeslotWeb.Themes.Rhythm.Meeting.Reschedule do
       legal_links={@legal_links}
       show_language_switcher={true}
     >
+      <SiteEngagement.header_bar />
       <div class="scheduling-box booker-card" data-testid="rhythm-reschedule">
         <div class="slide-container">
           <div class="slide active">
@@ -99,6 +101,10 @@ defmodule TymeslotWeb.Themes.Rhythm.Meeting.Reschedule do
           </div>
         </div>
       </div>
+      <SiteEngagement.engagement_footer
+        booking_path={PathHandlers.organizer_scheduling_path(assigns)}
+      />
+      <SiteEngagement.news_ticker />
     </Wrapper.rhythm_wrapper>
     """
   end

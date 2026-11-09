@@ -11,6 +11,8 @@ defmodule TymeslotWeb.Themes.Rhythm.Meeting.Cancel do
 
   alias Phoenix.LiveView.JS
   alias TymeslotWeb.Themes.Rhythm.Scheduling.Wrapper
+  alias TymeslotWeb.Themes.Shared.Components.SiteEngagement
+  alias TymeslotWeb.Themes.Shared.PathHandlers
 
   attr :theme_tokens, :any, required: true
   attr :locale, :string, required: true
@@ -26,6 +28,13 @@ defmodule TymeslotWeb.Themes.Rhythm.Meeting.Cancel do
   """
   @spec render(map()) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
+    assigns =
+      assign(
+        assigns,
+        :booking_path,
+        PathHandlers.organizer_scheduling_path(%{organizer_profile: assigns[:organizer_profile]})
+      )
+
     ~H"""
     <Wrapper.rhythm_wrapper
       theme_tokens={@theme_tokens}
@@ -34,6 +43,7 @@ defmodule TymeslotWeb.Themes.Rhythm.Meeting.Cancel do
       legal_links={@legal_links}
       show_language_switcher={true}
     >
+      <SiteEngagement.header_bar />
       <div class="scheduling-box booker-card" data-testid="rhythm-cancel">
         <div class="slide-container">
           <div class="slide active">
@@ -118,7 +128,7 @@ defmodule TymeslotWeb.Themes.Rhythm.Meeting.Cancel do
                 <%= if @meeting_kept do %>
                   <div class="confirmation-actions centered">
                     <button
-                      phx-click={JS.navigate("/")}
+                      phx-click={JS.navigate(@booking_path)}
                       class="action-button-primary action-button-success"
                       type="button"
                     >
@@ -157,6 +167,8 @@ defmodule TymeslotWeb.Themes.Rhythm.Meeting.Cancel do
           </div>
         </div>
       </div>
+      <SiteEngagement.engagement_footer booking_path={@booking_path} />
+      <SiteEngagement.news_ticker />
     </Wrapper.rhythm_wrapper>
     """
   end

@@ -7,6 +7,8 @@ defmodule TymeslotWeb.Themes.Quill.Meeting.CancelConfirmed do
 
   alias Phoenix.LiveView.JS
   alias TymeslotWeb.Themes.Quill.Scheduling.Wrapper
+  alias TymeslotWeb.Themes.Shared.Components.SiteEngagement
+  alias TymeslotWeb.Themes.Shared.PathHandlers
 
   use TymeslotWeb.Components.CoreComponents
 
@@ -21,6 +23,13 @@ defmodule TymeslotWeb.Themes.Quill.Meeting.CancelConfirmed do
   """
   @spec render(map()) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
+    assigns =
+      assign(
+        assigns,
+        :booking_path,
+        PathHandlers.organizer_scheduling_path(%{organizer_profile: assigns[:organizer_profile]})
+      )
+
     ~H"""
     <Wrapper.quill_wrapper
       theme_tokens={@theme_tokens}
@@ -29,6 +38,7 @@ defmodule TymeslotWeb.Themes.Quill.Meeting.CancelConfirmed do
       legal_links={@legal_links}
       show_language_switcher={true}
     >
+      <SiteEngagement.header_bar />
       <div
         class="min-h-screen flex items-center justify-center px-4 py-8"
         data-testid="quill-cancel-confirmed"
@@ -71,7 +81,7 @@ defmodule TymeslotWeb.Themes.Quill.Meeting.CancelConfirmed do
                 <div class="space-y-4">
                   <.action_button
                     type="button"
-                    phx-click={JS.navigate("/")}
+                    phx-click={JS.navigate(@booking_path)}
                     variant={:primary}
                     class="w-full"
                   >
@@ -83,6 +93,8 @@ defmodule TymeslotWeb.Themes.Quill.Meeting.CancelConfirmed do
           </.glass_morphism_card>
         </div>
       </div>
+      <SiteEngagement.engagement_footer booking_path={@booking_path} />
+      <SiteEngagement.news_ticker />
     </Wrapper.quill_wrapper>
     """
   end

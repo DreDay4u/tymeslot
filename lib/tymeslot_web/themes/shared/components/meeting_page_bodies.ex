@@ -14,6 +14,7 @@ defmodule TymeslotWeb.Themes.Shared.Components.MeetingPageBodies do
   import TymeslotWeb.Themes.Shared.Components.MeetingDetails, only: [meeting_detail_rows: 1]
 
   alias Phoenix.LiveView.JS
+  alias TymeslotWeb.Themes.Shared.Components.SiteEngagement
   alias TymeslotWeb.Themes.Shared.PathHandlers
 
   attr :meeting, :map, required: true
@@ -24,7 +25,10 @@ defmodule TymeslotWeb.Themes.Shared.Components.MeetingPageBodies do
 
   @spec cancel(map()) :: Phoenix.LiveView.Rendered.t()
   def cancel(%{meeting_kept: true} = assigns) do
+    assigns = assign_new_booking_path(assigns)
+
     ~H"""
+    <SiteEngagement.header_bar />
     <.heading icon="hero-check-circle" tone="success">
       <:title>{dgettext("booking_manage", "Meeting Confirmed")}</:title>
       {dgettext("booking_manage", "Great! Your meeting is still scheduled as planned.")}
@@ -39,16 +43,21 @@ defmodule TymeslotWeb.Themes.Shared.Components.MeetingPageBodies do
       <button
         type="button"
         class="manage-page__button manage-page__button--primary"
-        phx-click={JS.navigate("/")}
+        phx-click={JS.navigate(@booking_path)}
       >
         {dgettext("booking_manage", "Done")}
       </button>
     </div>
+    <SiteEngagement.engagement_footer booking_path={@booking_path} />
+    <SiteEngagement.news_ticker />
     """
   end
 
   def cancel(assigns) do
+    assigns = assign_new_booking_path(assigns)
+
     ~H"""
+    <SiteEngagement.header_bar />
     <.heading icon="hero-x-circle" tone="danger">
       <:title>{dgettext("booking_manage", "Cancel Appointment")}</:title>
       {dgettext("booking_manage", "Are you sure you want to cancel this appointment?")}
@@ -81,6 +90,8 @@ defmodule TymeslotWeb.Themes.Shared.Components.MeetingPageBodies do
         {dgettext("booking_manage", "Keep Meeting")}
       </button>
     </div>
+    <SiteEngagement.engagement_footer booking_path={@booking_path} />
+    <SiteEngagement.news_ticker />
     """
   end
 
@@ -94,6 +105,7 @@ defmodule TymeslotWeb.Themes.Shared.Components.MeetingPageBodies do
     assigns = assign(assigns, :booking_path, PathHandlers.organizer_scheduling_path(assigns))
 
     ~H"""
+    <SiteEngagement.header_bar />
     <.heading icon="hero-arrow-path" tone="primary">
       <:title>{dgettext("booking_manage", "Reschedule Appointment")}</:title>
       {dgettext("booking_manage", "Select a new time for your meeting")}
@@ -117,6 +129,8 @@ defmodule TymeslotWeb.Themes.Shared.Components.MeetingPageBodies do
         {dgettext("booking_manage", "Choose New Time")}
       </button>
     </div>
+    <SiteEngagement.engagement_footer booking_path={@booking_path} />
+    <SiteEngagement.news_ticker />
     """
   end
 
@@ -126,7 +140,10 @@ defmodule TymeslotWeb.Themes.Shared.Components.MeetingPageBodies do
 
   @spec cancel_confirmed(map()) :: Phoenix.LiveView.Rendered.t()
   def cancel_confirmed(assigns) do
+    assigns = assign_new_booking_path(assigns)
+
     ~H"""
+    <SiteEngagement.header_bar />
     <.heading icon="hero-check-circle" tone="success">
       <:title>{dgettext("booking_manage", "Meeting Cancelled")}</:title>
       {dgettext("booking_manage", "Your meeting has been successfully cancelled.")}
@@ -141,12 +158,25 @@ defmodule TymeslotWeb.Themes.Shared.Components.MeetingPageBodies do
       <button
         type="button"
         class="manage-page__button manage-page__button--primary"
-        phx-click={JS.navigate("/")}
+        phx-click={JS.navigate(@booking_path)}
       >
         {dgettext("booking_manage", "Schedule a New Meeting")}
       </button>
     </div>
+    <SiteEngagement.engagement_footer booking_path={@booking_path} />
+    <SiteEngagement.news_ticker />
     """
+  end
+
+  # The booking path without any meeting context: a cancel page's "book
+  # again" must start a fresh booking, never reschedule the meeting the
+  # visitor just cancelled or kept.
+  defp assign_new_booking_path(assigns) do
+    assign(
+      assigns,
+      :booking_path,
+      PathHandlers.organizer_scheduling_path(%{organizer_profile: assigns[:organizer_profile]})
+    )
   end
 
   attr :icon, :string, required: true

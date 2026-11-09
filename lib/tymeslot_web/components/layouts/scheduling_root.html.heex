@@ -11,13 +11,13 @@
     <meta name="robots" content="noindex" />
     <meta name="csrf-token" content={get_csrf_token()} />
     <meta name="csp-nonce" content={assigns[:csp_nonce]} />
-    <.live_title suffix=" · Tymeslot">
+    <.live_title suffix={" · " <> Tymeslot.Emails.Branding.brand_name()}>
       {assigns[:page_title] || dgettext("booking", "Schedule a meeting")}
     </.live_title>
 
     <%!-- Social share (Open Graph / Twitter) preview for booking links --%>
     <meta property="og:type" content="profile" />
-    <meta property="og:site_name" content="Tymeslot" />
+    <meta property="og:site_name" content={Tymeslot.Emails.Branding.brand_name()} />
     <meta
       property="og:title"
       content={assigns[:page_title] || dgettext("booking", "Schedule a meeting")}
@@ -33,7 +33,11 @@
     <meta name="twitter:description" content={booking_og_description(assigns)} />
     <meta name="twitter:image" content={booking_og_image(assigns)} />
 
-    <link rel="icon" type="image/svg+xml" href={~p"/images/brand/favicon.svg"} />
+    <%= if logo_url = Tymeslot.Emails.Branding.logo_url() do %>
+      <link rel="icon" type="image/png" href={logo_url} />
+    <% else %>
+      <link rel="icon" type="image/svg+xml" href={~p"/images/brand/favicon.svg"} />
+    <% end %>
 
     <%!-- Theme-specific CSS --%>
     {render_theme_css(assigns[:theme_id])}
